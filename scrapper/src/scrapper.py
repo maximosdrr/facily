@@ -17,7 +17,7 @@ class Scrapper:
     def createContestObject(self, data):
         try:
             contest = {
-                "type": "LOTOFACIL",
+                "type": self.type,
                 "result": data['dezenasSorteadasOrdemSorteio'],
                 "location": data['localSorteio'],
                 "index": data['numero'],

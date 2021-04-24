@@ -117,6 +117,6 @@ class Scrapper:
                             winnersPostList)
                         self.totalScrapped += 1
                         print(
-                            f'[Scrapp]: Progress: {self.totalScrapped}/{self.lastContest}')
+                            f'[Scrapp/{self.type}]: Progress: {self.totalScrapped}/{self.lastContest}')
         print(
-            f'[Scrapp]: End Scrapp {self.contestType}. Total Scrapped = {self.totalScrapped}/{self.lastContest}')
+            f'[Scrapp]: End Scrapp {self.type}. Total Scrapped = {self.totalScrapped}/{self.lastContest}')

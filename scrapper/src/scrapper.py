@@ -63,13 +63,16 @@ class Scrapper:
         caixaRes = None
         try:
             caixaRes = requests.get(url)
-            if caixaRes.status_code == 200 or caixaRes.status_code == 201:
-                return caixaRes.json()
+            if not caixaRes == None:
+                if caixaRes.status_code == 200 or caixaRes.status_code == 201:
+                    return caixaRes.json()
+                else:
+                    return None
             else:
                 return None
         except:
             print(
-                f'Failure to get response for caixa api with status: {caixaRes.status_code}')
+                f'Failure to get response for caixa api')
             return None
 
     def postContestOnFacilyApi(self, contestObject):
@@ -77,13 +80,16 @@ class Scrapper:
         try:
             facilApiRes = requests.post(
                 self.facilySaveContestEndPoint, json=contestObject)
-            if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
-                return facilApiRes.json()['id']
+            if not facilApiRes == None:
+                if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
+                    return facilApiRes.json()['id']
+                else:
+                    return None
             else:
                 return None
         except:
             print(
-                f'[CONTEST]: Failure to post contest object on facily api with status: {facilApiRes.status_code}')
+                f'[CONTEST]: Failure to post Contest object on facily')
             return None
 
     def postWinnersOnFacilyApi(self, winnersList):
@@ -91,32 +97,37 @@ class Scrapper:
         try:
             facilApiRes = requests.post(
                 self.facilySaveWinnersEndPoint, json=winnersList)
-            if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
-                return facilApiRes.json()
+            if not facilApiRes == None:
+                if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
+                    return facilApiRes.json()
+                else:
+                    return None
             else:
                 return None
         except:
             print(
-                f'[WINNERS]: Failure to post contest object on facily api with status: {facilApiRes.status_code}')
+                f'[WINNERS]: Failure to post contest object on facily api')
             return None
 
     def scrapp(self):
-        caixaRes = None
         for i in range(1, self.lastContest + 1):
-            contestData = self.getDataFromCaixaApi(i)
-            if not contestData == None:
-                contestPostObject = self.createContestObject(contestData)
+            try:
+                contestData = self.getDataFromCaixaApi(i)
+                if not contestData == None:
+                    contestPostObject = self.createContestObject(contestData)
 
-                if not contestPostObject == None:
-                    insertedContestId = self.postContestOnFacilyApi(
-                        contestPostObject)
-                    winnersPostList = self.createWinnerListObject(
-                        contestData, insertedContestId)
-                    if not winnersPostList == None:
-                        insertedWinnersResult = self.postWinnersOnFacilyApi(
-                            winnersPostList)
-                        self.totalScrapped += 1
-                        print(
-                            f'[Scrapp/{self.type}]: Progress: {self.totalScrapped}/{self.lastContest}')
+                    if not contestPostObject == None:
+                        insertedContestId = self.postContestOnFacilyApi(
+                            contestPostObject)
+                        winnersPostList = self.createWinnerListObject(
+                            contestData, insertedContestId)
+                        if not winnersPostList == None:
+                            insertedWinnersResult = self.postWinnersOnFacilyApi(
+                                winnersPostList)
+                            self.totalScrapped += 1
+                            print(
+                                f'[Scrapp/{self.type}]: Progress: {self.totalScrapped}/{self.lastContest}')
+            except:
+                print(f'[Scrapp/{self.type}]: errro handled')
         print(
             f'[Scrapp]: End Scrapp {self.type}. Total Scrapped = {self.totalScrapped}/{self.lastContest}')

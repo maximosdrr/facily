@@ -42,4 +42,4 @@ supersete = {
 
 
 def getScrapperConfigObjects():
-    return [quina, mega, lotofacil, lotomania, timemania, federal, diadesorte, supersete]
+    return [lotofacil, mega,  lotomania, quina,   federal, timemania,  supersete, diadesorte, ]

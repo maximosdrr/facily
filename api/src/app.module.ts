@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Contest } from './entities/contest.entity';
 import { Winners } from './entities/winners.entity';
 import { ContestModule } from './modules/contest/contest.module';
+import { Todo } from './entities/todo.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { ContestModule } from './modules/contest/contest.module';
       username: 'admin',
       password: 'admin',
       database: 'facily',
-      entities: [Contest, Winners],
+      entities: [Contest, Winners, Todo],
       synchronize: true,
     }),
     ContestModule,

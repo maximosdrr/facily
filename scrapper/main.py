@@ -11,3 +11,6 @@ for config in scrapperConfigs:
     lastContest = config['lastContest']
     scrapper = Scrapper(contestType, url, lastContest)
     scrapper.scrapp()
+
+# requests.post('http://localhost:3000/contest/save-todo',
+#               json={'type': 'TESTE', 'index': 1231})

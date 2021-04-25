@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Contest } from 'src/entities/contest.entity';
+import { Todo } from 'src/entities/todo.entity';
 import { Winners } from 'src/entities/winners.entity';
 import { ContestService } from './contest.service';
 
@@ -14,6 +15,11 @@ export class ContestController {
   @Post('save-winners')
   async saveWinners(@Body() winners: Winners[]) {
     return this.service.saveWinners(winners);
+  }
+
+  @Post('save-todo')
+  async saveTodo(@Body() todo: Todo) {
+    return this.service.saveTodo(todo);
   }
 
   @Get('find/:id')

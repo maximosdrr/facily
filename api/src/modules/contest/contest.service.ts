@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Contest } from 'src/entities/contest.entity';
+import { Todo } from 'src/entities/todo.entity';
 import { Winners } from 'src/entities/winners.entity';
 import { Repository } from 'typeorm';
 
@@ -16,6 +17,9 @@ export class ContestService {
 
     @InjectRepository(Winners)
     private readonly winnersRepo: Repository<Winners>,
+
+    @InjectRepository(Todo)
+    private readonly todoRepo: Repository<Todo>,
   ) {}
 
   saveContest(contest: Contest) {
@@ -38,6 +42,24 @@ export class ContestService {
     }
 
     return winners;
+  }
+
+  saveTodo(todo: Todo) {
+    try {
+      return this.todoRepo.save(todo);
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('Something is wrong');
+    }
+  }
+
+  findAllTodos() {
+    try {
+      return this.todoRepo.find();
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('Something is wrong');
+    }
   }
 
   findAllContests() {

@@ -18,46 +18,40 @@ class Scrapper:
         return url
 
     def createContestObject(self, data):
-        try:
-            contest = {
-                "type": self.type,
-                "result": data['dezenasSorteadasOrdemSorteio'],
-                "location": data['localSorteio'],
-                "index": data['numero'],
-                "accumulatedSpecialValue": data['valorAcumuladoConcursoEspecial'],
-                "accumulatedValueForNextContest": data['valorAcumuladoProximoConcurso'],
-                "accumulatedValue": data['valorAcumuladoConcurso_0_5'],
-                "collected": data['valorArrecadado'],
-                "estimatedValueForNextContest": data['valorEstimadoProximoConcurso'],
-            }
+        contest = {
+            "type": self.type,
+            "result": data['dezenasSorteadasOrdemSorteio'],
+            "location": data['localSorteio'],
+            "index": data['numero'],
+            "accumulatedSpecialValue": data['valorAcumuladoConcursoEspecial'],
+            "accumulatedValueForNextContest": data['valorAcumuladoProximoConcurso'],
+            "accumulatedValue": data['valorAcumuladoConcurso_0_5'],
+            "collected": data['valorArrecadado'],
+            "estimatedValueForNextContest": data['valorEstimadoProximoConcurso'],
+        }
 
-            if 'dezenasSorteadasOrdemSorteio' in data:
-                contest['result'] = data['dezenasSorteadasOrdemSorteio']
-            elif 'listaDezenas' in data:
-                contest['result'] = data['listaDezenas']
-            else:
-                contest['result'] = []
+        if 'dezenasSorteadasOrdemSorteio' in data:
+            contest['result'] = data['dezenasSorteadasOrdemSorteio']
+        elif 'listaDezenas' in data:
+            contest['result'] = data['listaDezenas']
+        else:
+            contest['result'] = []
 
-            return contest
-        except:
-            return None
+        return contest
 
     def createWinnerListObject(self, data, contestId):
         winners = []
         retrivedWinnerList = data["listaRateioPremio"]
 
         for i in range(len(retrivedWinnerList)):
-            try:
-                winner = {
-                    "contest": contestId,
-                    "amount": retrivedWinnerList[i]["numeroDeGanhadores"],
-                    "award": retrivedWinnerList[i]["valorPremio"],
-                    "description": retrivedWinnerList[i]["descricaoFaixa"],
-                    "range": retrivedWinnerList[i]["faixa"]
-                }
-                winners.append(winner)
-            except:
-                return None
+            winner = {
+                "contest": contestId,
+                "amount": retrivedWinnerList[i]["numeroDeGanhadores"],
+                "award": retrivedWinnerList[i]["valorPremio"],
+                "description": retrivedWinnerList[i]["descricaoFaixa"],
+                "range": retrivedWinnerList[i]["faixa"]
+            }
+            winners.append(winner)
 
         return winners
 
@@ -70,32 +64,26 @@ class Scrapper:
     def getDataFromCaixaApi(self, contestIndex):
         url = self.getUrl(contestIndex)
         caixaRes = None
-        try:
-            caixaRes = requests.get(url, timeout=self.requestTimeOut)
-            if not caixaRes == None:
-                if caixaRes.status_code == 200 or caixaRes.status_code == 201:
-                    return caixaRes.json()
-                else:
-                    return None
+        caixaRes = requests.get(url, timeout=self.requestTimeOut)
+        if not caixaRes == None:
+            if caixaRes.status_code == 200 or caixaRes.status_code == 201:
+                return caixaRes.json()
             else:
-                return None
-        except:
-            raise 'Failure to get response for caixa api'
+                raise '[Caixa]: Error to get data from caixa api'
+        else:
+            raise '[Caixa]: Error to get data from caixa api'
 
     def postContestOnFacilyApi(self, contestObject):
         facilApiRes = None
-        try:
-            facilApiRes = requests.post(
-                self.facilySaveContestEndPoint, json=contestObject, timeout=self.requestTimeOut)
-            if not facilApiRes == None:
-                if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
-                    return facilApiRes.json()['id']
-                else:
-                    return None
+        facilApiRes = requests.post(
+            self.facilySaveContestEndPoint, json=contestObject, timeout=self.requestTimeOut)
+        if not facilApiRes == None:
+            if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
+                return facilApiRes.json()['id']
             else:
-                return None
-        except:
-            raise '[CONTEST]: Failure to post Contest object on facily'
+                raise '[Contest]: Error to post data from facily api'
+        else:
+            return None
 
     def postTodoItem(self, todoObject):
         contestNumber = todoObject['index']
@@ -111,18 +99,15 @@ class Scrapper:
 
     def postWinnersOnFacilyApi(self, winnersList):
         facilApiRes = None
-        try:
-            facilApiRes = requests.post(
-                self.facilySaveWinnersEndPoint, json=winnersList, timeout=self.requestTimeOut)
-            if not facilApiRes == None:
-                if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
-                    return facilApiRes.json()
-                else:
-                    return None
+        facilApiRes = requests.post(
+            self.facilySaveWinnersEndPoint, json=winnersList, timeout=self.requestTimeOut)
+        if not facilApiRes == None:
+            if(facilApiRes.status_code == 200 or facilApiRes.status_code == 201):
+                return facilApiRes.json()
             else:
-                return None
-        except:
-            raise f'[WINNERS]: Failure to post contest object on facily api'
+                raise '[Winners]: Error to post data from facily api'
+        else:
+            raise '[Winners]: Error to post data from facily api'
 
     def scrapp(self):
         currentTime = time.time()
@@ -141,11 +126,12 @@ class Scrapper:
                             insertedWinnersResult = self.postWinnersOnFacilyApi(
                                 winnersPostList)
                             self.totalScrapped += 1
-                            if i % 100 == 0 or i == 1:
+                            if self.totalScrapped % 100 == 0 or i == 1:
                                 print(
                                     f'[Scrapp/{self.type}]: Progress: {self.totalScrapped}/{self.lastContest}. Execution Time: {time.time() - currentTime}')
                                 currentTime = time.time()
-            except:
+            except Exception as e:
+                print(e)
                 todoObject = self.createTodoObject(i)
                 self.postTodoItem(todoObject)
         print(

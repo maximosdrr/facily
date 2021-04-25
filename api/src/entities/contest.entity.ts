@@ -9,8 +9,8 @@ export class Contest {
   @Column()
   type: string;
 
-  @Column('varchar', { array: true })
-  result: string[];
+  @Column('int', { array: true })
+  result: number[] | string[];
 
   @Column()
   location: string;

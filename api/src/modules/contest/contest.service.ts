@@ -24,10 +24,11 @@ export class ContestService {
 
   saveContest(contest: Contest) {
     try {
+      contest.result = contest.result.map((strResult) => parseInt(strResult));
       return this.contestRepo.save(contest);
     } catch (e) {
       console.log(e);
-      throw new BadRequestException('Algo deu errado');
+      throw new BadRequestException('Something is wrong');
     }
   }
 

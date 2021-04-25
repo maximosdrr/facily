@@ -1,0 +1,33 @@
+*RETORNA TODAS AS LINHAS QUE CONTEM A SEQUENCIA CONTIDA NO ARRAY*
+
+SELECT 
+	contest.result, contest.index 
+FROM contest  
+WHERE 
+	contest.type = 'LOTOFACIL' AND 
+	contest.result @> ARRAY[1]::integer[] 
+ORDER BY
+	contest.index
+
+
+* RETORNA O NUMERO DE VEZES QUE AQUELA SEQUENCIA SAIU
+
+SELECT 
+	COUNT(*)
+FROM contest
+WHERE 
+	contest.type = 'LOTOFACIL' AND 
+	contest.result @> ARRAY[1]::integer[] 
+
+* RETORNA A PONTUAÇÃO OBTIDA DADA UMA DETERMINADA SEQUENCIA NUMERICA *
+
+SELECT 
+	cardinality(result & ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]::integer[]) as overlap 
+FROM
+	contest
+WHERE 
+	type = 'LOTOFACIL'
+GROUP BY 
+	overlap
+ORDER BY
+	overlap

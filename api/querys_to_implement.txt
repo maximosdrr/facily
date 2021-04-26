@@ -24,13 +24,14 @@ WHERE
 
 * RETORNA A PONTUAÇÃO OBTIDA DADA UMA DETERMINADA SEQUENCIA NUMERICA *
 
-SELECT 
-	cardinality(result & ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]::integer[]) as overlap 
+SELECT
+	count(*) as occurrences,
+	cardinality(result & ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]::integer[]) as points
 FROM
 	contest
 WHERE 
 	type = 'LOTOFACIL'
-GROUP BY 
-	overlap
+GROUP BY
+	points
 ORDER BY
-	overlap
+	points

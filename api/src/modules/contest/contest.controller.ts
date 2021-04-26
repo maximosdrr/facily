@@ -17,6 +17,26 @@ export class ContestController {
     return this.service.saveWinners(winners);
   }
 
+  @Post('find-all-lines-that-contains-sequence')
+  findAllLinesThatContainsSequence(
+    @Body() data: { sequence: number[]; type: string },
+  ) {
+    return this.service.findAllLinesThatContainSequence(
+      data.sequence,
+      data.type,
+    );
+  }
+
+  @Post('find-sequence-ocurrence')
+  findSequenceOcurrence(@Body() data: { sequence: number[]; type: string }) {
+    return this.service.findSequenceOcurrence(data.sequence, data.type);
+  }
+
+  @Post('find-sequence-pontuation')
+  findSequencePontuation(@Body() data: { sequence: number[]; type: string }) {
+    return this.service.findSequencePontuation(data.sequence, data.type);
+  }
+
   @Post('save-todo')
   async saveTodo(@Body() todo: Todo) {
     return this.service.saveTodo(todo);

@@ -1,12 +1,12 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Winners } from './winners.entity';
-
+import { ContestTypes } from '../models/contest-types';
 @Entity()
 export class Contest {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: ContestTypes, default: ContestTypes.UNTYPE })
   type: string;
 
   @Column('int', { array: true })

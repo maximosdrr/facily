@@ -5,6 +5,9 @@ import { Contest } from './entities/contest.entity';
 import { Winners } from './entities/winners.entity';
 import { ContestModule } from './modules/contest/contest.module';
 import { Todo } from './entities/todo.entity';
+import { UserModule } from './modules/user/user.module';
+import { User } from './entities/user.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,10 +18,12 @@ import { Todo } from './entities/todo.entity';
       username: 'admin',
       password: 'admin',
       database: 'facily',
-      entities: [Contest, Winners, Todo],
+      entities: [Contest, Winners, Todo, User],
       synchronize: true,
     }),
     ContestModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [],
